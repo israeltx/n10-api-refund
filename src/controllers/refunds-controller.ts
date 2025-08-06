@@ -1,12 +1,12 @@
 import { AppError } from "@/utils/AppError"
 import { Request, Response } from "express"
-import { authConfig } from "@/configs/auth"
+// import { authConfig } from "@/configs/auth"
 import { prisma } from "@/database/prisma"
-import { sign } from "jsonwebtoken"
-import { compare } from "bcrypt"
+// import { sign } from "jsonwebtoken"
+// import { compare } from "bcrypt"
 import { z } from "zod"
 
-const CategoriesEnum = z.enum(['food', 'others', 'services', 'transport', 'acommodation'])
+const CategoriesEnum = z.enum(['food', 'others', 'services', 'transport', 'accommodation'])
 
 class RefundsController {
  async create(request: Request, response: Response) {
@@ -19,7 +19,21 @@ class RefundsController {
 
   const {name, category, amount, filename} = bodySchema.parse(request.body)
 
-  response.status(201).json({message: 'Session Controller ok'})
+  if (!request.user?.id) {
+    throw new AppError('Usuário não autorizado', 401)
+  }
+
+  const refund = await prisma.refunds.create({
+    data: {
+      name,
+      category, 
+      amount,
+      filename,
+      userId: request.user.id
+    }
+  })
+
+  response.status(201).json(refund)
  }
 
 }
