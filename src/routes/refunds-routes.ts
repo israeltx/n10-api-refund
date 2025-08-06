@@ -3,8 +3,9 @@ import { RefundsController } from "@/controllers/refunds-controller";
 import { verifyUserAuthorization } from "@/middlewares/verify-user-authorization";
 
 const refundsRoutes = Router()
-const sessionsController = new RefundsController()
+const refundsController = new RefundsController()
 
-refundsRoutes.post('/', verifyUserAuthorization(['employee']), sessionsController.create)
+refundsRoutes.post('/', verifyUserAuthorization(['employee']), refundsController.create)
+refundsRoutes.get('/', verifyUserAuthorization(['manager']), refundsController.index)
 
 export { refundsRoutes }
