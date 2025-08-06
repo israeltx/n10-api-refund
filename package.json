@@ -2,9 +2,9 @@
   "name": "n10-api-refund",
   "version": "1.0.0",
   "description": "Refund request API",
-  "main": "index.js",
+  "main": "src/server.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/server.ts"
   },
   "author": "Israel Teixeira",
   "license": "ISC",
