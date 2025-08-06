@@ -5,6 +5,6 @@ import { verifyUserAuthorization } from "@/middlewares/verify-user-authorization
 const refundsRoutes = Router()
 const sessionsController = new RefundsController()
 
-refundsRoutes.post('/', verifyUserAuthorization(['manager']), sessionsController.create)
+refundsRoutes.post('/', verifyUserAuthorization(['employee']), sessionsController.create)
 
 export { refundsRoutes }
