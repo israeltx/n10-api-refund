@@ -1,0 +1,10 @@
+import { Request, Response } from "express"
+
+class UsersController {
+ async create(request: Request, response: Response) {
+  response.json({ message:'Create controller ok' })
+ }
+
+}
+
+export { UsersController }
