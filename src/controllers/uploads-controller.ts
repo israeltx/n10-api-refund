@@ -1,9 +1,14 @@
+import { DiskStorage } from "@/providers/disk-storage";
 import { Request, Response } from "express";
-import uploadConfig from "@/configs/upload"
+import uploadConfig from "@/configs/upload";
+import { AppError } from "@/utils/AppError";
+import { ZodError } from "zod";
 import z from "zod";
 
 class UploadsController {
   async create(request: Request, response: Response) {
+    const diskStorage = new DiskStorage()
+
     try {
       const fileSchema = z.object({
         filename: z.string().min(1, 'Arquivo é obrigatório'),
@@ -17,11 +22,18 @@ class UploadsController {
         })
       }).passthrough()
 
-      const { file } = fileSchema.parse(request.file)
+      const file = fileSchema.parse(request.file)
+      const filename = await diskStorage.saveFile(file.filename)
 
-      response.json({message: 'Validação da imagem ok'})
+      response.json({filename})
 
     } catch (error) {
+      if (error instanceof ZodError) {
+        if (request.file) {
+          await diskStorage.deleteFile(request.file.filename, 'tmp')
+        }
+        throw new AppError(error.issues[0].message)
+      }
       throw error
     }
   }
